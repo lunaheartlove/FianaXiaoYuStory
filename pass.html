@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box }
+        html, body { height: 100% }
+
+        body {
+            font-family: 'Mali', cursive;
+            background: linear-gradient(to right, #FDC7D7, #FFFFFF, #FDC7D7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 28px 16px;
+            gap: 22px;
+        }
+
+        .card {
+            width: min(500px, 92vw);
+            background: #E86C8D;
+            color: #fff;
+            border-radius: 28px;
+            padding: 36px 46px 32px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, .15);
+        }
+
+        .h-1 { font-size: 28px; margin-bottom: 6px }
+        .hint { font-size: 14px; opacity: .9; margin-bottom: 22px }
+
+        .inputs {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .otp {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 12px;
+            background: #ffffff;
+            text-align: center;
+            font-size: 24px;
+            color: #E86C8D;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+            transition: transform .06s ease;
+        }
+
+        .otp:focus { outline: 3px solid #FFD6E1 }
+
+        .error-inline {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #FFFFFF;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .18s ease, transform .18s ease;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-inline.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translateX(-2px); }
+            20%, 80% { transform: translateX(4px); }
+            30%, 50%, 70% { transform: translateX(-6px); }
+            40%, 60% { transform: translateX(6px); }
+        }
+
+        .shake { animation: shake .4s both; }
+
+        .btn {
+            display: inline-block;
+            background: #E86C8D;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 34px;
+            border-radius: 999px;
+            font-size: large;
+            box-shadow: 0 10px 24px rgba(232, 108, 141, .35);
+            transition: transform .06s ease, filter .15s ease, box-shadow .15s ease;
+        }
+
+        .btn:hover { filter: brightness(.96); transform: translateY(-1px) }
+        .btn:active { transform: none; box-shadow: 0 8px 18px rgba(232, 108, 141, .28) }
+    </style>
+</head>
+
+<body>
+
+    <section class="card" aria-label="输入6位密码">
+        <p class="h-1">输入密码</p>
+        <p class="hint">提示：我们在一起的那一天💝</p> <!-- อิอิ -->
+
+        <div class="inputs" id="inputsRow">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第1位">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第2位">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第3位">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第4位">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第5位">
+            <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="第6位">
+        </div>
+
+        <div class="error-inline" id="errorInline" aria-live="polite">密码不正确</div>
+    </section>
+
+    <a href="flower.html" id="submitBtn" class="btn" role="button">确认</a>
+
+    <script> // อิอิ
+        const CORRECT = "260222";
+        const SUCCESS_HREF = "flower.html";
+
+        const inputs = Array.from(document.querySelectorAll('.otp'));
+        const submitBtn = document.getElementById('submitBtn');
+        const errorInline = document.getElementById('errorInline');
+        const inputsRow = document.getElementById('inputsRow');
+
+        inputs[0].focus();
+
+        inputs.forEach((el, i) => {
+            el.addEventListener('input', () => {
+                el.value = el.value.replace(/\D/g, '').slice(0, 1);
+                if (el.value && i < inputs.length - 1) inputs[i + 1].focus();
+            });
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !el.value && i > 0) {
+                    inputs[i - 1].focus();
+                    inputs[i - 1].value = '';
+                }
+                if (e.key === 'Enter') checkCode();
+            });
+            el.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+                if (!text) return;
+                for (let k = 0; k < inputs.length; k++) inputs[k].value = text[k] || '';
+                (text.length >= 6 ? submitBtn : inputs[Math.min(text.length, 5)]).focus();
+            });
+        });
+
+        submitBtn.addEventListener('click', (e) => { e.preventDefault(); checkCode(); });
+
+        function checkCode() {
+            const entered = inputs.map(i => i.value).join('');
+            if (entered === CORRECT) {
+                window.location.href = SUCCESS_HREF;
+            } else {
+                errorInline.classList.add('show');
+                inputsRow.classList.remove('shake');
+                void inputsRow.offsetWidth;
+                inputsRow.classList.add('shake');
+
+                setTimeout(() => errorInline.classList.remove('show'), 2000);
+
+                inputs.forEach(i => i.value = '');
+                inputs[0].focus();
+            }
+        }
+    </script>
+</body>
+
+</html>

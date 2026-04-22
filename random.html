@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LOVE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Mali', cursive;
+            background: linear-gradient(to right, #FDC7D7, #FFFFFF, #FDC7D7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 25px;
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #E86C8D;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .wheel-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        h1 {
+            color: #5C3A42;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            margin-bottom: 10px;
+            color: #7C6270;
+            font-size: 14px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 10px 0;
+        }
+
+        .wheel {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 4px solid #E86C8D;
+            background: conic-gradient(#FFD6F4 0deg 60deg,
+                    #C8F4FF 60deg 120deg,
+                    #FFECC7 120deg 180deg,
+                    #FFC2D1 180deg 240deg,
+                    #CDEAC0 240deg 300deg,
+                    #E2D4FF 300deg 360deg);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+            transition: transform 4s cubic-bezier(.17, .67, .35, 1.28);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-bottom: 22px solid #E86C8D;
+            filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .18));
+            z-index: 10;
+        }
+
+        .status {
+            font-size: 14px;
+            color: #5C3A42;
+            min-height: 22px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        button {
+            font-family: 'Mali', cursive;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: none;
+            background: #E86C8D;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(232, 108, 141, 0.35);
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(232, 108, 141, 0.45);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .result-popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .result-popup.show {
+            display: flex;
+        }
+
+        .result-box {
+            background: #FFF9FF;
+            padding: 28px 34px 26px;
+            border-radius: 24px;
+            text-align: center;
+            width: min(320px, 90%);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn .35s ease;
+        }
+
+        .result-title {
+            color: #E86C8D;
+            font-size: 20px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .result-message {
+            color: #5C3A42;
+            font-size: 17px;
+            margin-bottom: 18px;
+        }
+
+        .result-close {
+            font-family: 'Mali', cursive;
+            padding: 10px 24px;
+            border-radius: 999px;
+            border: none;
+            background: #E86C8D;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(232, 108, 141, 0.35);
+        }
+
+        .result-close:hover {
+            transform: translateY(-1px);
+        }
+
+        .h {
+            position: absolute;
+            font-size: 18px;
+            opacity: 0;
+            animation: floatHeart 2.5s ease-in-out infinite;
+        }
+
+        .h.h1 {
+            left: 15%;
+            bottom: -10px;
+            animation-delay: 0s;
+        }
+
+        .h.h2 {
+            right: 10%;
+            bottom: -10px;
+            animation-delay: 0.4s;
+        }
+
+        .h.h3 {
+            left: 50%;
+            bottom: -10px;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) scale(0.9);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-80px) scale(1.2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card wheel-wrapper">
+        <h1>随心转盘</h1>
+        <p class="subtitle">转动转盘后截图结果发给我就可以啦</p>
+
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div id="wheel" class="wheel">
+            </div>
+        </div>
+
+        <div class="status" id="statusText">点击“开始旋转”开始游戏</div>
+
+        <div class="btn-row">
+            <button id="spinBtn">开始旋转</button>
+            <button onclick="window.location.href='menu.html'">返回菜单</button>
+        </div>
+    </div>
+
+    <div id="resultPopup" class="result-popup">
+        <div class="result-box">
+
+            <div class="h h1">💖</div>
+            <div class="h h2">💕</div>
+            <div class="h h3">💘</div>
+
+            <div class="result-title">转盘结果是…</div>
+            <div id="popupResult" class="result-message"></div>
+
+            <button class="result-close" onclick="closePopup()">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinBtn');
+        const statusText = document.getElementById('statusText');
+
+        const resultPopup = document.getElementById("resultPopup");
+        const popupResult = document.getElementById("popupResult");
+
+        // อิอิ
+        const options = [
+            "等我到成都，我请你吃好吃的",
+            "你要两天不抽烟",
+            "我会宠你一天",
+            "你也要宠我一天",
+            "请你说“我爱你”（用语音发给我）",
+            "我会飞去找你"
+        ];
+
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        spinBtn.addEventListener('click', () => {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            statusText.textContent = '正在旋转中，请稍等一下看结果';
+
+            const segments = options.length;
+            const segmentAngle = 360 / segments;
+
+            const selectedIndex = Math.floor(Math.random() * segments);
+            const extraTurns = 3 + Math.floor(Math.random() * 3);
+            const pointerAngle = 90;
+
+            const targetSegmentCenter = selectedIndex * segmentAngle + segmentAngle / 2;
+
+            const finalRotation =
+                currentRotation +
+                extraTurns * 360 +
+                (pointerAngle - targetSegmentCenter);
+
+            currentRotation = finalRotation;
+            wheel.style.transform = `rotate(${finalRotation}deg)`;
+        });
+
+        wheel.addEventListener('transitionend', () => {
+            const segments = options.length;
+            const segmentAngle = 360 / segments;
+            const pointerAngle = 90;
+
+            let normalized = ((currentRotation % 360) + 360) % 360;
+            const angleAtPointer = (pointerAngle - normalized + 360) % 360;
+            const index = Math.floor(angleAtPointer / segmentAngle);
+
+            const choice = options[index];
+
+            popupResult.textContent = choice;
+            resultPopup.classList.add("show");
+            statusText.textContent = `结果是: ${choice}!`;
+
+            spinBtn.disabled = false;
+            isSpinning = false;
+        });
+
+        function closePopup() {
+            resultPopup.classList.remove("show");
+        }
+    </script>
+
+</body>
+
+</html>

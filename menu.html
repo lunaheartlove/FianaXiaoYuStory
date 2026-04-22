@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Mali', cursive;
+            background: linear-gradient(to right, #FDC7D7, #FFFFFF, #FDC7D7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            color: #5C3A42;
+            margin-bottom: 40px;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .menu-item {
+            background: #E86C8D;
+            color: white;
+            padding: 40px 30px;
+            border-radius: 35px;
+            width: 210px;
+            height: 210px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 10px 25px rgba(232, 108, 141, 0.35);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 16px 35px rgba(232, 108, 141, 0.45);
+        }
+
+        .menu-item img {
+            width: 85px;
+            height: 85px;
+            margin-bottom: 14px;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .menu-item p {
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        @supports (padding: max(0px)) {
+            body {
+                min-height: 100dvh;
+                padding-left: max(24px, env(safe-area-inset-left));
+                padding-right: max(24px, env(safe-area-inset-right));
+                padding-top: max(24px, env(safe-area-inset-top));
+                padding-bottom: max(24px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <p class="title">选择菜单</p>
+
+        <div class="menu-container">
+            <a href="love-days.html" class="menu-item">
+                <img src="img/8.png" alt="เชอร์รี่">
+                <p>我们在一起<br>多久了呢</p>
+            </a>
+
+            <a href="letter.html" class="menu-item">
+                <img src="img/7.png" alt="กระต่าย">
+                <p>写给可爱的你<br>的一封信</p>
+            </a>
+
+            <a href="game.html" class="menu-item">
+                <img src="img/9.png" alt="คัพเค้ก">
+                <p>我们有多了解<br>彼此呢</p>
+            </a>
+
+            <a href="memory.html" class="menu-item">
+                <img src="img/10.png" alt="กล้อง">
+                <p>回忆</p>
+            </a>
+
+            <a href="jigsaw.html" class="menu-item">
+                <img src="img/12.png" alt="กระดุม">
+                <p>我们的拼图</p>
+            </a>
+
+            <a href="random.html" class="menu-item">
+                <img src="img/11.png" alt="มงกุฎ">
+                <p>随心随机转盘</p>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
